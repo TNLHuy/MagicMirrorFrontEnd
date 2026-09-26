@@ -1,0 +1,129 @@
+====================================================================
+      HUONG DAN CAI DAT VA VAN HANH MAGICMIRROR2 (STATE CONTROL)
+====================================================================
+
+Tài liệu hướng dẫn chi tiết từ cài đặt môi trường, chạy thử nghiệm hệ thống 
+giả lập Backend WebSocket, đến cách kiểm thử (debug) các trạng thái giao diện UI.
+
+--------------------------------------------------------------------
+I. CHUAN BI MOI TRUONG & KHOI TAO DU AN
+--------------------------------------------------------------------
+
+1. Cài đặt Node.js:
+   - Tải và cài đặt Node.js (khuyên dùng bản LTS) từ trang chủ: https://nodejs.org/
+   - Mở Terminal / Command Prompt và kiểm tra cài đặt:
+     node -v
+     npm -v
+
+2. Cài đặt các thư viện phụ thuộc (Dependencies):
+   - Mở Terminal tại thư mục gốc của dự án MagicMirror2 và chạy:
+     npm install
+   - Giải thích: Lệnh này sẽ tự động tải toàn bộ thư viện cần thiết 
+     trong file package.json về thư mục node_modules/.
+
+
+--------------------------------------------------------------------
+II. CAU HINH NGON NGU TIENG VIET (CUSTOM TRANSLATION)// phần này bỏ qua vì cấu hình r
+--------------------------------------------------------------------
+
+Mặc định MagicMirror² không tích hợp sẵn Tiếng Việt. Để hiển thị giao diện tiếng Việt:
+
+1. Tạo file vi.json trong thư mục translations/
+2. Cấu trúc file translations/vi.json ví dụ:
+   {
+     "LOADING": "Đang tải...",
+     "UPDATE_NOTIFICATION": "Có bản cập nhật mới!"
+   }
+3. Khai báo ngôn ngữ trong file cấu hình config/config.js:
+   let config = {
+       language: "vi",
+       // ... các cấu hình khác
+   };
+
+
+--------------------------------------------------------------------
+III. QUY TRINH VAN HANH HE THONG
+--------------------------------------------------------------------
+
+Hệ thống hoạt động dựa trên cơ chế kết nối WebSocket giữa MagicMirror (Frontend) 
+và Mock Server (Backend) tại cổng 8085.
+
+BUOC 1: Chạy Backend Giả Lập (Mock Server)
+   - Mở Terminal thứ nhất và chạy lệnh:
+     node mock-server.js
+
+   - Mô tả: Server sẽ chạy tại địa chỉ ws://localhost:8085 và tự động lặp lại 
+     chu kỳ kiểm thử các trạng thái hệ thống:
+       + 0s - 3s  : State 0 (Tắt/Mờ màn hình)
+       + 3s - 8s  : State 2 (Hiện hiệu ứng sóng âm Voice AI + Dòng chữ "Tôi đang nghe bạn...")
+       + 8s - 14s : State 2 (Cập nhật câu trả lời AI: "Bây giờ là 20:00, thời tiết TP.HCM rất mát mẻ.")
+       + 14s - 20s: State 1 (Hiện các Widget Lịch, Thời tiết, Đồng hồ...)
+       + 20s trở đi: Quay lại State 0
+
+BUOC 2: Khởi động MagicMirror²
+   - Mở Terminal thứ hai và chạy câu lệnh tương ứng với Hệ điều hành:
+
+   * Trên Windows:
+     - Chế độ thông thường:
+       npm run start:windows
+     - Chế độ Dev Mode (Khuyên dùng để kiểm thử & nhập lệnh Console):
+       npm run start:windows:dev
+
+   * Trên Linux / Raspberry Pi / macOS:
+     - Chế độ thông thường:
+       npm run start
+     - Chế độ Dev Mode:
+       npm run dev
+
+
+--------------------------------------------------------------------
+IV. HUONG DAN TEST LENH CHUYEN TRANG THAI (DEV MODE)
+--------------------------------------------------------------------
+
+Khi chạy ở Dev Mode, giao diện cửa sổ Developer Tools (Console) sẽ tự động mở ra.
+
+1. Các Trạng Thái Hệ Thống (Module MMM-StateControl):
+   - State 0 (Sleep / Standby): Tắt/mờ màn hình đen hoàn toàn, ẩn tất cả các widget.
+   - State 1 (Ambient Display): Hiển thị màn hình chờ gồm các Widget chính (Đồng hồ, Thời tiết, Tin tức...).
+   - State 2 (Voice Interaction / AI Response): Ẩn các widget, hiển thị hiệu ứng dải sóng âm nhấp nháy Neon + dòng chữ phản hồi từ AI.
+
+2. Dán Lệnh Ép Trạng Thái Trực Tiếp Trong Console:
+   - Mở tab Console trong Developer Tools (Ctrl + Shift + I hoặc F12) và dán các dòng lệnh sau:
+
+   // Ép chuyển về State 0 (Sleep / Standby)
+   MM.getModules().withClass("MMM-StateControl")[0].setSystemState(0);
+
+   // Ép chuyển về State 1 (Ambient - Hiện lại tất cả Widget)
+   MM.getModules().withClass("MMM-StateControl")[0].setSystemState(1);
+
+   // Ép chuyển về State 2 (Voice AI - Mặc định "Tôi đang nghe bạn...")
+   MM.getModules().withClass("MMM-StateControl")[0].setSystemState(2);
+
+   // Ép chuyển về State 2 kèm câu phản hồi tùy chỉnh của AI
+   MM.getModules().withClass("MMM-StateControl")[0].setSystemState(2, "Chào bạn, tôi có thể giúp gì?");
+
+
+--------------------------------------------------------------------
+V. LUU Y VE CAU HINH GIONG NOI TIENG VIET//cái này phần backend thì mới đọc
+--------------------------------------------------------------------
+
+Trong trường hợp bạn muốn tích hợp đọc giọng nói Tiếng Việt cho AI:
+
+1. Nếu dùng ResponsiveVoice API:
+   - Trong file index.html, phải thay giá trị FREE_KEY bằng API Key thật lấy từ trang https://responsivevoice.org/
+   - Cú pháp nhúng chuẩn trong HTML:
+     <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_ACTUAL_KEY"></script>
+   - Gọi đọc trong JS:
+     responsiveVoice.speak("Tôi đang nghe bạn", "Vietnamese Female");
+
+2. Khuyên dùng Web Speech API (Tích hợp sẵn, Miễn phí, Không cần Key):
+   - Bạn có thể dùng trực tiếp API trình duyệt trong module MMM-StateControl.js:
+
+   function speak(text) {
+       const utterance = new SpeechSynthesisUtterance(text);
+       utterance.lang = 'vi-VN';
+       window.speechSynthesis.speak(utterance);
+   }
+
+   // Gọi hàm khi nhận câu trả lời ở State 2:
+   speak("Bây giờ là 20 giờ");
