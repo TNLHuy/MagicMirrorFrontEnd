@@ -127,3 +127,23 @@ Trong trường hợp bạn muốn tích hợp đọc giọng nói Tiếng Việ
 
    // Gọi hàm khi nhận câu trả lời ở State 2:
    speak("Bây giờ là 20 giờ");
+   ============================LOOP TEST====================================
+   (function testLoop() {
+    console.log("--> State 2: Đang nghe (Gợn nhẹ)");
+    MM.getModules().withClass("MMM-StateControl")[0].setSystemState(2, "Tôi đang nghe bạn...", false);
+
+    setTimeout(() => {
+        console.log("--> State 2: AI Trả lời (Gợn sóng mạnh)");
+        MM.getModules().withClass("MMM-StateControl")[0].setSystemState(2, "Xin chào! Chúc bạn một ngày tốt lành.", true);
+    }, 4000);
+
+    setTimeout(() => {
+        console.log("--> State 1: Hiện Widget");
+        MM.getModules().withClass("MMM-StateControl")[0].setSystemState(1);
+    }, 9000);
+
+    setTimeout(() => {
+        console.log("--> State 0: Sleep");
+        MM.getModules().withClass("MMM-StateControl")[0].setSystemState(0);
+    }, 14000);
+})();
