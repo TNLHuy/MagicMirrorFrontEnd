@@ -1,0 +1,78 @@
+/* STATE 0: Màn hình chờ tối đen hoàn toàn */
+body.state-sleep {
+    background-color: #000000 !important;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Khung toàn màn hình cố định cho tương tác Voice AI (State 2) */
+.state-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    pointer-events: none;
+    z-index: 9999;
+    box-sizing: border-box;
+    padding: 0 4vw;
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Cố định vị trí của Quả cầu Voice AI (Glowing Orb) trên màn hình:
+   - Neo vị trí cố định bằng clamp() theo tỷ lệ chiều cao màn hình (28vh).
+   - Tách biệt hoàn toàn khỏi dòng chữ bên dưới.
+   - Quả cầu AI luôn đứng yên một chỗ, triệt tiêu hoàn toàn hiện tượng "giật lên"! */
+#siri-orb-container {
+    margin-top: clamp(80px, 28vh, 380px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: auto;
+    max-width: 90vw;
+}
+
+/* Hiệu ứng hào quang phát sáng sâu xuyên gương */
+.ai-glowing-orb-canvas {
+    display: block;
+    filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.45)) drop-shadow(0 0 50px rgba(178, 36, 239, 0.35));
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Dòng chữ phản hồi từ Voice AI:
+   - Nằm ngay dưới quả cầu AI (dòng tiếp theo trong luồng flex column).
+   - Khi nhận câu trả lời từ AI, chữ sẽ tự động mở rộng theo chiều XUỐNG DƯỚI (downward),
+     tuyệt đối không đẩy quả cầu ở trên lên.
+   - Tự động ngắt dòng và co giãn cỡ chữ theo màn hình, chống tràn mép. */
+.listening-text {
+    margin-top: clamp(16px, 2.2vh, 30px);
+    width: 90%;
+    max-width: 850px;
+    text-align: center;
+    color: #ffffff;
+    font-size: clamp(20px, 1.8vw + 0.4vh, 32px);
+    font-weight: 300;
+    line-height: 1.55;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    animation: text-glow 2s ease-in-out infinite alternate;
+}
+
+/* Animation phát sáng chữ */
+@keyframes text-glow {
+    from {
+        opacity: 0.7;
+    }
+    to {
+        opacity: 1;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.95);
+    }
+}
