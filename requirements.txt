@@ -1,0 +1,37 @@
+# ====================================================================
+#   DEPENDENCIES CHO TRỢ LÝ AI GƯƠNG THÔNG MINH (MAGICMIRROR2 + PI 5)
+# ====================================================================
+
+# 1. Core Server & Mạng
+websockets>=12.0
+python-dotenv>=1.0.0
+
+# 2. Xử lý Trí Tuệ Nhân Tạo Trung Tâm (Google Gemini)
+google-genai>=0.1.0
+
+# 3. Phần cứng Camera & Thị giác máy tính
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+
+# 4. Âm thanh & Microphone
+sounddevice>=0.4.6
+pyaudio>=0.2.14
+SpeechRecognition>=3.10.0
+
+# 5. Media & Streaming
+yt-dlp>=2024.0.0
+
+# 6. Edge Voice Pipeline (Chạy trên Raspberry Pi 5 8GB)
+# - Nhận diện từ khóa 'Hey mirror' (openWakeWord ONNX)
+openwakeword>=0.4.0
+onnxruntime>=1.16.0
+# librosa hoặc torchaudio (dùng để trích xuất MFCC)
+librosa>=0.10.0
+
+# - Cắt khoảng lặng giọng nói tự nhiên
+silero-vad>=5.0.0
+
+# - Local STT 30M tham số (ARM NEON)
+# (Có thể cài sherpa-onnx hoặc faster-whisper tùy cấu hình chi tiết)
+sherpa-onnx>=1.10.0
+

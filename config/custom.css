@@ -1,0 +1,120 @@
+/* Custom CSS - Tối ưu hóa tự động thích ứng với mọi kích thước và định dạng màn hình
+ * (Màn hình ngang, màn hình dọc 1080x1920 cho Smart Mirror, 2K, 4K, Raspberry Pi, tablet...)
+ * Dù đổi sang bất kỳ màn hình nào cũng tự động căn chỉnh và co giãn tỉ lệ, không cần format lại code/CSS.
+ */
+
+:root {
+  --color-text: #999;
+  --color-text-dimmed: #666;
+  --color-text-bright: #fff;
+  --color-background: #000;
+
+  --font-primary: "Roboto Condensed";
+  --font-secondary: "Roboto";
+
+  /* Fluid Responsive Typography:
+     - Tối thiểu 13px trên màn hình nhỏ (800x480)
+     - Khoảng 18px-20px trên màn Full HD (1080p ngang & dọc)
+     - 28px-34px trên màn hình 2K/4K/TV lớn
+     Tất cả widget (dùng rem) tự động co giãn tỷ lệ hoàn hảo */
+  --font-size: clamp(13px, 0.85vw + 0.55vh, 32px);
+  --font-size-xsmall: 0.75rem;
+  --font-size-small: 0.95rem;
+  --font-size-medium: 1.4rem;
+  --font-size-large: 2.8rem;
+  --font-size-xlarge: 3.4rem;
+
+  /* Fluid Body Gaps: Lề ngoài co giãn linh hoạt
+     - Không chiếm hết không gian trên màn hình nhỏ
+     - Không bị trống hoác hoặc quá sát mép trên màn hình lớn */
+  --gap-body-top: clamp(15px, 3vh, 70px);
+  --gap-body-bottom: clamp(15px, 3vh, 70px);
+  --gap-body-left: clamp(15px, 3vw, 70px);
+  --gap-body-right: clamp(15px, 3vw, 70px);
+
+  --gap-modules: clamp(12px, 1.8vh, 30px);
+}
+
+/* Chống va chạm & chồng lấn nội dung giữa cột trái và cột phải */
+.region.top.left,
+.region.bottom.left {
+  max-width: 48%;
+  box-sizing: border-box;
+}
+
+.region.top.right,
+.region.bottom.right {
+  max-width: 48%;
+  box-sizing: border-box;
+}
+
+/* Ngắt từ và chống tràn nội dung cho tất cả module */
+.region .module {
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.region table {
+  max-width: 100%;
+}
+
+/* Đảm bảo vùng middle_center không giữ transform kéo giật các container con */
+.region.middle.center:has(#state-control-container) {
+  transform: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+/* ==============================================================
+   Tự động thích ứng khi dùng Màn hình dọc (Smart Mirror dọc 1080x1920)
+   ============================================================== */
+@media (orientation: portrait), (max-aspect-ratio: 1/1) {
+  :root {
+    --font-size: clamp(14px, 1.6vw + 0.3vh, 26px);
+    --gap-body-top: clamp(20px, 2.5vh, 50px);
+    --gap-body-bottom: clamp(20px, 2.5vh, 50px);
+    --gap-body-left: clamp(15px, 2.5vw, 40px);
+    --gap-body-right: clamp(15px, 2.5vw, 40px);
+    --gap-modules: clamp(12px, 1.5vh, 25px);
+  }
+
+  .region.top.left,
+  .region.bottom.left {
+    max-width: 50%;
+  }
+
+  .region.top.right,
+  .region.bottom.right {
+    max-width: 48%;
+  }
+}
+
+/* ==============================================================
+   Tự động thích ứng cho Màn hình lớn 2K / 4K / TV
+   ============================================================== */
+@media (min-width: 2560px) {
+  :root {
+    --font-size: clamp(24px, 0.9vw + 0.5vh, 36px);
+    --gap-body-top: 80px;
+    --gap-body-bottom: 80px;
+    --gap-body-left: 80px;
+    --gap-body-right: 80px;
+    --gap-modules: 40px;
+  }
+}
+
+/* ==============================================================
+   Tự động thích ứng cho Màn hình nhỏ (Raspberry Pi 7", 800x480, 1024x600)
+   ============================================================== */
+@media (max-width: 900px), (max-height: 600px) {
+  :root {
+    --font-size: clamp(11px, 1.8vw, 14px);
+    --gap-body-top: 12px;
+    --gap-body-bottom: 12px;
+    --gap-body-left: 12px;
+    --gap-body-right: 12px;
+    --gap-modules: 10px;
+  }
+}

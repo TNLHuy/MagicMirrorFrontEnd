@@ -1,0 +1,332 @@
+/* ==============================================================
+   2. [BOTTOM_RIGHT] TRÌNH PHÁT NHẠC MINI & TRẠNG THÁI SMARTHOME
+   - Cố định ở góc dưới bên phải, nằm trên thanh bottom_bar
+   ============================================================== */
+.nlu-bottom-right-zone {
+    position: fixed;
+    bottom: 84px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 900;
+    pointer-events: auto;
+    max-width: 330px;
+}
+
+/* 2.1 Trình phát nhạc mini (PLAY_MEDIA) */
+.nlu-media-player-widget {
+    background: rgba(12, 18, 30, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    border-radius: 18px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 242, 254, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease;
+}
+
+.nlu-media-player-widget.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.media-icon-disc {
+    font-size: 24px;
+    animation: disc-spin 3.5s linear infinite paused;
+}
+
+.media-playing .media-icon-disc {
+    animation-play-state: running;
+}
+
+.media-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.media-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.media-artist {
+    font-size: 13px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.media-status {
+    font-size: 11px;
+    color: #00f2fe;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.media-wave-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+}
+
+.media-wave-bars span {
+    width: 2.5px;
+    height: 100%;
+    background: #00f2fe;
+    border-radius: 2px;
+    animation: media-bar-jump 0.8s ease-in-out infinite alternate paused;
+}
+
+.media-playing .media-wave-bars span {
+    animation-play-state: running;
+}
+
+.media-wave-bars span:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+.media-wave-bars span:nth-child(2) { height: 90%; animation-delay: 0.3s; }
+.media-wave-bars span:nth-child(3) { height: 60%; animation-delay: 0.0s; }
+.media-wave-bars span:nth-child(4) { height: 80%; animation-delay: 0.2s; }
+
+/* 2.2 Trạng thái SmartHome (SMART_HOME) */
+.nlu-smarthome-widget {
+    background: rgba(12, 18, 30, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(124, 77, 255, 0.3);
+    border-radius: 18px;
+    padding: 12px 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(124, 77, 255, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease;
+}
+
+.nlu-smarthome-widget.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.smarthome-header {
+    font-size: 14px;
+    font-weight: 500;
+    color: #a78bfa;
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
+}
+
+.smarthome-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.smarthome-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #e2e8f0;
+}
+
+.device-name {
+    font-size: 13.5px;
+    color: #e2e8f0;
+}
+
+.device-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.device-status.status-on {
+    background: rgba(52, 211, 153, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.device-status.status-off {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* 2.3 Widget Lịch trình & Lịch học (GET_CALENDAR) */
+.nlu-schedule-widget {
+    background: rgba(10, 18, 34, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 242, 254, 0.4);
+    border-radius: 20px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 18px rgba(0, 242, 254, 0.15);
+    width: 330px;
+    max-height: 62vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease;
+    box-sizing: border-box;
+}
+
+.nlu-schedule-widget.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.schedule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.schedule-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.schedule-icon {
+    font-size: 18px;
+}
+
+.schedule-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #e0f2fe;
+    letter-spacing: 0.4px;
+}
+
+.schedule-badge-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0, 242, 254, 0.15);
+    color: #00f2fe;
+    border: 1px solid rgba(0, 242, 254, 0.35);
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 50vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.schedule-list::-webkit-scrollbar {
+    display: none;
+}
+
+.schedule-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3.5px solid #00f2fe;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    transition: background 0.2s ease;
+}
+
+.schedule-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.schedule-time-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.schedule-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: #00f2fe;
+    background: rgba(0, 242, 254, 0.08);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.schedule-note {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 6px;
+    padding: 1px 5px;
+    letter-spacing: 0.2px;
+}
+
+.schedule-code {
+    font-size: 11px;
+    color: #a78bfa;
+    font-weight: 500;
+}
+
+.schedule-item-title {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.schedule-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.schedule-item-loc {
+    font-size: 12px;
+    color: #38bdf8;
+    font-weight: 500;
+}
+
+.schedule-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 8px;
+    color: #94a3b8;
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+}
+
+.schedule-empty-icon {
+    font-size: 16px;
+    color: #00f2fe;
+}

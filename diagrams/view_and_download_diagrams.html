@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sơ Đồ Hệ Thống & Luồng Tương Tác - MagicMirror AI</title>
+  <script src="./mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --success: #34d399;
+      --success-hover: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 30px 20px 80px 20px;
+      line-height: 1.6;
+    }
+    .header {
+      max-width: 1300px;
+      margin: 0 auto 35px auto;
+      text-align: center;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      padding: 35px 25px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+    .header h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 45px;
+    }
+    .diagram-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 28px;
+      background: rgba(15, 23, 42, 0.75);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-png {
+      background: var(--primary);
+      color: #0f172a;
+    }
+    .btn-png:hover {
+      background: var(--primary-hover);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.35);
+    }
+    .btn-svg {
+      background: var(--success);
+      color: #0f172a;
+    }
+    .btn-svg:hover {
+      background: var(--success-hover);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.35);
+    }
+    .diagram-viewport {
+      padding: 35px;
+      background: #0b1120;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+    .diagram-viewport svg {
+      max-width: 100%;
+      height: auto;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #10b981;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🔮 MagicMirror² AI Architecture Diagrams</h1>
+    <p>Sơ đồ kiến trúc hệ thống và luồng tương tác NLU Router. Bạn có thể bấm nút bên dưới để tải trực tiếp ảnh PNG chất lượng cao (2x Retina) hoặc tệp Vector SVG (Không bao giờ vỡ hạt).</p>
+  </div>
+
+  <div class="container">
+    <!-- Card 1 -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🏛️</span>
+          <span>1. Sơ Đồ Hệ Thống Tổng Thể (System Architecture Diagram)</span>
+        </div>
+        <div class="actions">
+          <button class="btn btn-png" onclick="downloadImage('container1', '01_system_architecture.png', 'png')">
+            ⬇️ Tải ảnh PNG (HD)
+          </button>
+          <button class="btn btn-svg" onclick="downloadImage('container1', '01_system_architecture.svg', 'svg')">
+            ⬇️ Tải ảnh SVG (Vector)
+          </button>
+        </div>
+      </div>
+      <div class="diagram-viewport" id="container1">
+        <pre class="mermaid">
+flowchart TD
+    %% User & Hardware Layer
+    subgraph Hardware_Layer ["🖥️ LỚP PHẦN CỨNG & NGƯỜI DÙNG"]
+        USER(["👤 Người dùng trước gương"])
+        MIC["🎙️ Microphone (USB / Realtek)"]
+        CAM["📷 Webcam (OpenCV cv2)"]
+        SPEAKER["🔊 Loa ngoài (Audio Output)"]
+        DISPLAY["🪞 Màn hình Gương (Monitor)"]
+    end
+
+    %% External Cloud Services
+    subgraph Cloud_Services ["☁️ DỊCH VỤ ĐÁM MÂY (EXTERNAL SERVICES)"]
+        GEMINI["🧠 Google Gemini API (3.8 Flash / Vision)"]
+        GOOGLE_STT["🗣️ Google Speech-to-Text (vi-VN)"]
+        WEATHER_API["⛅ Open-Meteo Weather API"]
+        GCAL["📅 Google Calendar (iCal/ICS)"]
+    end
+
+    %% Python Backend Layer
+    subgraph Python_Backend ["⚙️ LỚP BACKEND XỬ LÝ AI & PHẦN CỨNG (PYTHON 3.14)"]
+        CLI["cli_controller.py / demo_controller.py<br/>(CLI & Trình điều phối chính)"]
+        
+        subgraph HW_Mgr ["hardware_manager.py"]
+            MIC_MGR["RealMicrophone<br/>- RMS Volume Calc<br/>- VAD & Speech Recognition"]
+            CAM_MGR["RealCamera<br/>- Video Capture<br/>- Flash & Photo Save screen_shot/"]
+        end
+
+        subgraph AI_Core ["ai_engine.py"]
+            NLU_ROUTER["NLU Intent Router<br/>(Phân loại 10 Action)"]
+            VISION_AI["Vision AI Processor<br/>(Phân tích vật thể camera)"]
+            FALLBACK_NLU["Fallback Local Rules<br/>(Dự phòng khi offline)"]
+        end
+
+        subgraph Core_Services ["Dịch vụ mở rộng"]
+            CAL_SRV["calendar_service.py<br/>(Xử lý thời khóa biểu & ngày lễ)"]
+            AUDIO_SRV["Audio Streaming Engine<br/>(music/ offline MP3 & Lo-Fi stream)"]
+        end
+
+        WS_SERVER["mirror_server.py<br/>(WebSockets Server :8085)"]
+    end
+
+    %% Frontend MagicMirror Layer
+    subgraph Frontend_MM ["🎨 LỚP HIỂN THỊ GIAO DIỆN (MAGICMIRROR² / ELECTRON)"]
+        NODE_SERVER["Node.js Server (:8080) & Electron Host"]
+        
+        subgraph Static_Modules ["Module Tĩnh (4 Góc Mặt Gương)"]
+            MOD_CLOCK["Clock (clock.js)<br/>(TOP_LEFT)"]
+            MOD_WEATHER["Weather (weather.js)<br/>(TOP_RIGHT)"]
+            MOD_CAL["Calendar (calendar.js)<br/>(BOTTOM_LEFT)"]
+        end
+
+        subgraph MMM_StateControl ["Module Điều Khiển Trung Tâm (MMM-StateControl)"]
+            SOCKET_CLIENT["SocketClient.js<br/>(Kết nối ws://localhost:8085)"]
+            STATE_MGR["StateManager.js<br/>(Quản lý State 0: Sleep / State 1: Active)"]
+            
+            subgraph Dynamic_Overlays ["Khu Vực Động (MIDDLE_CENTER)"]
+                BUBBLE["ChatBubble.js<br/>(Khung bong bóng tròn 3D)"]
+                KNOWLEDGE["KnowledgeCard.js<br/>(Thẻ tri thức & Popup ảnh Web)"]
+                VISION_POPUP["VisionPopup.js<br/>(Laser scanner & Vision tags)"]
+                PHOTO_PREVIEW["PhotoPreview.js<br/>(Đếm ngược 3-2-1 & Flash)"]
+            end
+
+            subgraph Corner_Widgets ["Widget Góc Phụ & Thanh Đáy"]
+                MEDIA_WIDGET["MediaPlayerWidget.js<br/>(BOTTOM_RIGHT)"]
+                SMART_HOME["SmartHomeWidget.js<br/>(BOTTOM_RIGHT)"]
+                SCHEDULE_WIDGET["ScheduleWidget.js"]
+                BOTTOM_BAR["BottomBar & SiriWaveVisualizer.js<br/>(BOTTOM_BAR) Sóng âm & Trạng thái"]
+            end
+        end
+    end
+
+    %% Relationships & Data Flow
+    USER -->|Nói khẩu lệnh| MIC
+    USER -->|Tương tác hình ảnh| CAM
+    DISPLAY -->|Phản chiếu ánh sáng| USER
+    SPEAKER -->|Phát âm thanh/nhạc/chime| USER
+
+    MIC -->|Tín hiệu âm thanh raw| MIC_MGR
+    CAM -->|Khung hình video/ảnh| CAM_MGR
+
+    MIC_MGR -->|Âm thanh tiếng Việt| GOOGLE_STT
+    GOOGLE_STT -->|Văn bản tiếng Việt| NLU_ROUTER
+    CLI -->|Lệnh gõ tay/phím tắt| NLU_ROUTER
+
+    NLU_ROUTER -->|Prompt & Phân loại Intent| GEMINI
+    GEMINI -->|Kết quả JSON| NLU_ROUTER
+    CAM_MGR -->|Khung ảnh Base64| VISION_AI
+    VISION_AI -->|Yêu cầu thị giác| GEMINI
+    GEMINI -->|Thẻ nhận diện| VISION_AI
+    NLU_ROUTER -.->|Chế độ offline| FALLBACK_NLU
+
+    CAL_SRV -->|Tải iCal định kỳ| GCAL
+    MOD_WEATHER -->|Dự báo thời tiết| WEATHER_API
+
+    %% Backend to Server
+    MIC_MGR -->|Realtime Volume 0.0-1.0| WS_SERVER
+    NLU_ROUTER -->|JSON Action Payload| WS_SERVER
+    CAM_MGR -->|Ảnh chụp Base64| WS_SERVER
+    AUDIO_SRV -->|Thông tin bài hát/Stream| WS_SERVER
+
+    %% Server to Client
+    WS_SERVER -->|WebSocket Full-Duplex| SOCKET_CLIENT
+    SOCKET_CLIENT -->|Gửi lệnh phản hồi| WS_SERVER
+    SOCKET_CLIENT --> STATE_MGR
+
+    STATE_MGR --> BUBBLE
+    STATE_MGR --> KNOWLEDGE
+    STATE_MGR --> VISION_POPUP
+    STATE_MGR --> PHOTO_PREVIEW
+    STATE_MGR --> MEDIA_WIDGET
+    STATE_MGR --> SMART_HOME
+    STATE_MGR --> SCHEDULE_WIDGET
+    STATE_MGR --> BOTTOM_BAR
+
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_CLOCK
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_WEATHER
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_CAL
+
+    NODE_SERVER -->|Render đồ họa HTML5/CSS3| DISPLAY
+    AUDIO_SRV -->|Phát nhạc thật| SPEAKER
+
+        </pre>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="diagram-card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🔄</span>
+          <span>2. Sơ Đồ Luồng Tương Tác Giọng Nói (Voice Interaction Sequence Flow)</span>
+        </div>
+        <div class="actions">
+          <button class="btn btn-png" onclick="downloadImage('container2', '02_voice_interaction_sequence.png', 'png')">
+            ⬇️ Tải ảnh PNG (HD)
+          </button>
+          <button class="btn btn-svg" onclick="downloadImage('container2', '02_voice_interaction_sequence.svg', 'svg')">
+            ⬇️ Tải ảnh SVG (Vector)
+          </button>
+        </div>
+      </div>
+      <div class="diagram-viewport" id="container2">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as 👤 Người dùng
+    participant Mic as 🎙️ Micro (RealMicrophone)
+    participant STT as 🗣️ Google Speech-to-Text
+    participant AI as 🧠 Gemini AI Engine
+    participant Srv as 🐍 Python MirrorBackend (:8085)
+    participant MM as 🪞 MMM-StateControl (Electron)
+    participant Audio as 🔊 Loa ngoài
+
+    User->>Mic: Cất tiếng nói: "Hôm nay thời tiết thế nào?"
+    loop Mỗi 50ms (Real-time Audio RMS)
+        Mic->>Srv: Gửi biên độ âm lượng MIC_LEVEL (0.0 -> 1.0)
+        Srv->>MM: Broadcast MIC_LEVEL
+        MM->>MM: Sóng SiriWave tại [BOTTOM_BAR] rung động theo giọng nói
+    end
+    
+    Mic->>STT: Gửi đoạn âm thanh thu được (VAD phát hiện ngắt câu)
+    STT-->>Mic: Trả về văn bản tiếng Việt
+    Mic->>Srv: Trigger callback text: "Hôm nay thời tiết thế nào?"
+    
+    Srv->>MM: Cập nhật Bottom Bar: "Đang xử lý..."
+    Srv->>AI: analyze_prompt("Hôm nay thời tiết thế nào?")
+    AI->>AI: NLU Router phân loại thành SHOW_WEATHER
+    AI-->>Srv: Trả về JSON { action: "SHOW_WEATHER", query: "TP. Hồ Chí Minh" }
+    
+    Srv->>MM: Gửi WebSocket Message { type: "NLU_ACTION", action: "SHOW_WEATHER", ... }
+    MM->>MM: Đánh thức [TOP_RIGHT] Widget Thời tiết & Hiển thị thông tin
+    MM->>Audio: Phát âm thanh Chime xác nhận
+    MM->>MM: Khung Quả cầu tròn [MIDDLE_CENTER] xuất hiện trả lời tóm tắt
+
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Đã tải ảnh thành công!</div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0b1120',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#38bdf8',
+        lineColor: '#64748b',
+        secondaryColor: '#334155',
+        tertiaryColor: '#0f172a'
+      },
+      flowchart: {
+        curve: 'basis',
+        useMaxWidth: false
+      },
+      sequence: {
+        actorMargin: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: false
+      }
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function downloadImage(containerId, filename, format) {
+      const container = document.getElementById(containerId);
+      const svg = container.querySelector('svg');
+      if (!svg) {
+        alert('Chưa tải xong sơ đồ, vui lòng chờ trong giây lát!');
+        return;
+      }
+
+      const clonedSvg = svg.cloneNode(true);
+      clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      
+      const bbox = svg.getBoundingClientRect();
+      const width = Math.max(svg.viewBox?.baseVal?.width || bbox.width, 1400);
+      const height = Math.max(svg.viewBox?.baseVal?.height || bbox.height, 900);
+      
+      clonedSvg.setAttribute('width', width);
+      clonedSvg.setAttribute('height', height);
+
+      const svgData = new XMLSerializer().serializeToString(clonedSvg);
+
+      if (format === 'svg') {
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const a = document.createElement('a');
+        a.href = svgUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(svgUrl);
+        showToast('✓ Đã tải file Vector SVG: ' + filename);
+        return;
+      }
+
+      const scale = 2;
+      const canvas = document.createElement('canvas');
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      ctx.fillStyle = '#0b1120';
+      ctx.fillRect(0, 0, width, height);
+
+      const img = new Image();
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, width, height);
+        URL.revokeObjectURL(url);
+        
+        canvas.toBlob(function(blob) {
+          const pngUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = pngUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(pngUrl);
+          showToast('✓ Đã tải ảnh PNG HD: ' + filename);
+        }, 'image/png');
+      };
+      img.src = url;
+    }
+  </script>
+</body>
+</html>

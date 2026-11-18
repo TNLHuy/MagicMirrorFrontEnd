@@ -81,3 +81,26 @@ yarn.lock
 
 # Vitest temporary test files
 tests/**/.tmp/
+
+# Environment secrets and screenshots
+.env
+.env.*
+screen_shot/
+
+# Virtual Environment & Python cache
+.MMvenv/
+venv/
+__pycache__/
+*.pyc
+
+
+# Local runtime data and environments
+.MMenv/
+.venv/
+web/.impeccable/
+data/
+backend/services/calendar_cache/
+backend/services/calendar_cache.ics
+test/records/
+*.wav
+modules/MMM-StateControl/music/

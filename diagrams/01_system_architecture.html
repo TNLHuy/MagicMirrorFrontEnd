@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="file:///E:/Projects/MagicMirror-master/diagrams/mermaid.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0b1120;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 40px;
+      display: inline-block;
+    }
+    svg {
+      background: #0b1120 !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <pre class="mermaid">
+flowchart TD
+    %% User & Hardware Layer
+    subgraph Hardware_Layer ["🖥️ LỚP PHẦN CỨNG & NGƯỜI DÙNG"]
+        USER(["👤 Người dùng trước gương"])
+        MIC["🎙️ Microphone (USB / Realtek)"]
+        CAM["📷 Webcam (OpenCV cv2)"]
+        SPEAKER["🔊 Loa ngoài (Audio Output)"]
+        DISPLAY["🪞 Màn hình Gương (Monitor)"]
+    end
+
+    %% External Cloud Services
+    subgraph Cloud_Services ["☁️ DỊCH VỤ ĐÁM MÂY (EXTERNAL SERVICES)"]
+        GEMINI["🧠 Google Gemini API (3.8 Flash / Vision)"]
+        GOOGLE_STT["🗣️ Google Speech-to-Text (vi-VN)"]
+        WEATHER_API["⛅ Open-Meteo Weather API"]
+        GCAL["📅 Google Calendar (iCal/ICS)"]
+    end
+
+    %% Python Backend Layer
+    subgraph Python_Backend ["⚙️ LỚP BACKEND XỬ LÝ AI & PHẦN CỨNG (PYTHON 3.14)"]
+        CLI["cli_controller.py / demo_controller.py<br/>(CLI & Trình điều phối chính)"]
+        
+        subgraph HW_Mgr ["hardware_manager.py"]
+            MIC_MGR["RealMicrophone<br/>- RMS Volume Calc<br/>- VAD & Speech Recognition"]
+            CAM_MGR["RealCamera<br/>- Video Capture<br/>- Flash & Photo Save screen_shot/"]
+        end
+
+        subgraph AI_Core ["ai_engine.py"]
+            NLU_ROUTER["NLU Intent Router<br/>(Phân loại 10 Action)"]
+            VISION_AI["Vision AI Processor<br/>(Phân tích vật thể camera)"]
+            FALLBACK_NLU["Fallback Local Rules<br/>(Dự phòng khi offline)"]
+        end
+
+        subgraph Core_Services ["Dịch vụ mở rộng"]
+            CAL_SRV["calendar_service.py<br/>(Xử lý thời khóa biểu & ngày lễ)"]
+            AUDIO_SRV["Audio Streaming Engine<br/>(music/ offline MP3 & Lo-Fi stream)"]
+        end
+
+        WS_SERVER["mirror_server.py<br/>(WebSockets Server :8085)"]
+    end
+
+    %% Frontend MagicMirror Layer
+    subgraph Frontend_MM ["🎨 LỚP HIỂN THỊ GIAO DIỆN (MAGICMIRROR² / ELECTRON)"]
+        NODE_SERVER["Node.js Server (:8080) & Electron Host"]
+        
+        subgraph Static_Modules ["Module Tĩnh (4 Góc Mặt Gương)"]
+            MOD_CLOCK["Clock (clock.js)<br/>(TOP_LEFT)"]
+            MOD_WEATHER["Weather (weather.js)<br/>(TOP_RIGHT)"]
+            MOD_CAL["Calendar (calendar.js)<br/>(BOTTOM_LEFT)"]
+        end
+
+        subgraph MMM_StateControl ["Module Điều Khiển Trung Tâm (MMM-StateControl)"]
+            SOCKET_CLIENT["SocketClient.js<br/>(Kết nối ws://localhost:8085)"]
+            STATE_MGR["StateManager.js<br/>(Quản lý State 0: Sleep / State 1: Active)"]
+            
+            subgraph Dynamic_Overlays ["Khu Vực Động (MIDDLE_CENTER)"]
+                BUBBLE["ChatBubble.js<br/>(Khung bong bóng tròn 3D)"]
+                KNOWLEDGE["KnowledgeCard.js<br/>(Thẻ tri thức & Popup ảnh Web)"]
+                VISION_POPUP["VisionPopup.js<br/>(Laser scanner & Vision tags)"]
+                PHOTO_PREVIEW["PhotoPreview.js<br/>(Đếm ngược 3-2-1 & Flash)"]
+            end
+
+            subgraph Corner_Widgets ["Widget Góc Phụ & Thanh Đáy"]
+                MEDIA_WIDGET["MediaPlayerWidget.js<br/>(BOTTOM_RIGHT)"]
+                SMART_HOME["SmartHomeWidget.js<br/>(BOTTOM_RIGHT)"]
+                SCHEDULE_WIDGET["ScheduleWidget.js"]
+                BOTTOM_BAR["BottomBar & SiriWaveVisualizer.js<br/>(BOTTOM_BAR) Sóng âm & Trạng thái"]
+            end
+        end
+    end
+
+    %% Relationships & Data Flow
+    USER -->|Nói khẩu lệnh| MIC
+    USER -->|Tương tác hình ảnh| CAM
+    DISPLAY -->|Phản chiếu ánh sáng| USER
+    SPEAKER -->|Phát âm thanh/nhạc/chime| USER
+
+    MIC -->|Tín hiệu âm thanh raw| MIC_MGR
+    CAM -->|Khung hình video/ảnh| CAM_MGR
+
+    MIC_MGR -->|Âm thanh tiếng Việt| GOOGLE_STT
+    GOOGLE_STT -->|Văn bản tiếng Việt| NLU_ROUTER
+    CLI -->|Lệnh gõ tay/phím tắt| NLU_ROUTER
+
+    NLU_ROUTER -->|Prompt & Phân loại Intent| GEMINI
+    GEMINI -->|Kết quả JSON| NLU_ROUTER
+    CAM_MGR -->|Khung ảnh Base64| VISION_AI
+    VISION_AI -->|Yêu cầu thị giác| GEMINI
+    GEMINI -->|Thẻ nhận diện| VISION_AI
+    NLU_ROUTER -.->|Chế độ offline| FALLBACK_NLU
+
+    CAL_SRV -->|Tải iCal định kỳ| GCAL
+    MOD_WEATHER -->|Dự báo thời tiết| WEATHER_API
+
+    %% Backend to Server
+    MIC_MGR -->|Realtime Volume 0.0-1.0| WS_SERVER
+    NLU_ROUTER -->|JSON Action Payload| WS_SERVER
+    CAM_MGR -->|Ảnh chụp Base64| WS_SERVER
+    AUDIO_SRV -->|Thông tin bài hát/Stream| WS_SERVER
+
+    %% Server to Client
+    WS_SERVER -->|WebSocket Full-Duplex| SOCKET_CLIENT
+    SOCKET_CLIENT -->|Gửi lệnh phản hồi| WS_SERVER
+    SOCKET_CLIENT --> STATE_MGR
+
+    STATE_MGR --> BUBBLE
+    STATE_MGR --> KNOWLEDGE
+    STATE_MGR --> VISION_POPUP
+    STATE_MGR --> PHOTO_PREVIEW
+    STATE_MGR --> MEDIA_WIDGET
+    STATE_MGR --> SMART_HOME
+    STATE_MGR --> SCHEDULE_WIDGET
+    STATE_MGR --> BOTTOM_BAR
+
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_CLOCK
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_WEATHER
+    STATE_MGR -.->|Quản lý ẩn/hiện State 0/1| MOD_CAL
+
+    NODE_SERVER -->|Render đồ họa HTML5/CSS3| DISPLAY
+    AUDIO_SRV -->|Phát nhạc thật| SPEAKER
+
+    </pre>
+  </div>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0b1120',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#38bdf8',
+        lineColor: '#64748b',
+        secondaryColor: '#334155',
+        tertiaryColor: '#0f172a'
+      },
+      flowchart: {
+        curve: 'basis',
+        useMaxWidth: false
+      },
+      sequence: {
+        actorMargin: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: false
+      }
+    });
+  </script>
+</body>
+</html>

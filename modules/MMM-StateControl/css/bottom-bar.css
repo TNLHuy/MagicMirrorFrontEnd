@@ -1,0 +1,95 @@
+/* ==============================================================
+   3. [BOTTOM_BAR] THANH TRẠNG THÁI TRỢ LÝ: [ĐANG NGHE...] / [VOLUME]
+   - Nằm cố định ở đáy màn hình (System Status Bar)
+   ============================================================== */
+.nlu-bottom-bar-zone {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 70px;
+    background: rgba(6, 10, 20, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 242, 254, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 36px;
+    box-sizing: border-box;
+    z-index: 950;
+    pointer-events: auto;
+}
+
+.bottom-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 260px;
+}
+
+.assistant-orb-pulse {
+    font-size: 20px;
+    color: #00f2fe;
+    text-shadow: 0 0 12px #00f2fe, 0 0 20px #7c4dff;
+    animation: pulse-orb 1.5s infinite ease-in-out;
+}
+
+.bottom-status-text {
+    font-size: 16px;
+    font-weight: 300;
+    color: #f1f5f9;
+    letter-spacing: 0.8px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Siri Waveform ở giữa bottom bar */
+.bottom-bar-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    max-width: 480px;
+    height: 100%;
+}
+
+.bottom-wave-canvas {
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
+}
+
+.bottom-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 240px;
+    justify-content: flex-end;
+}
+
+.volume-label {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.volume-meter-track {
+    width: 90px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.volume-meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe, #7c4dff);
+    border-radius: 6px;
+    box-shadow: 0 0 8px #00f2fe;
+    transition: width 0.1s ease;
+}
+
+.volume-percent {
+    font-size: 14px;
+    color: #00f2fe;
+    font-weight: 500;
+    min-width: 36px;
+}

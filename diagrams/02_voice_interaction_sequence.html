@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="file:///E:/Projects/MagicMirror-master/diagrams/mermaid.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0b1120;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 40px;
+      width: 2800px; display: block;
+    }
+    svg { width: 2700px !important; height: auto !important;
+      background: #0b1120 !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as 👤 Người dùng
+    participant Mic as 🎙️ Micro (RealMicrophone)
+    participant STT as 🗣️ Google Speech-to-Text
+    participant AI as 🧠 Gemini AI Engine
+    participant Srv as 🐍 Python MirrorBackend (:8085)
+    participant MM as 🪞 MMM-StateControl (Electron)
+    participant Audio as 🔊 Loa ngoài
+
+    User->>Mic: Cất tiếng nói: "Hôm nay thời tiết thế nào?"
+    loop Mỗi 50ms (Real-time Audio RMS)
+        Mic->>Srv: Gửi biên độ âm lượng MIC_LEVEL (0.0 -> 1.0)
+        Srv->>MM: Broadcast MIC_LEVEL
+        MM->>MM: Sóng SiriWave tại [BOTTOM_BAR] rung động theo giọng nói
+    end
+    
+    Mic->>STT: Gửi đoạn âm thanh thu được (VAD phát hiện ngắt câu)
+    STT-->>Mic: Trả về văn bản tiếng Việt
+    Mic->>Srv: Trigger callback text: "Hôm nay thời tiết thế nào?"
+    
+    Srv->>MM: Cập nhật Bottom Bar: "Đang xử lý..."
+    Srv->>AI: analyze_prompt("Hôm nay thời tiết thế nào?")
+    AI->>AI: NLU Router phân loại thành SHOW_WEATHER
+    AI-->>Srv: Trả về JSON { action: "SHOW_WEATHER", query: "TP. Hồ Chí Minh" }
+    
+    Srv->>MM: Gửi WebSocket Message { type: "NLU_ACTION", action: "SHOW_WEATHER", ... }
+    MM->>MM: Đánh thức [TOP_RIGHT] Widget Thời tiết & Hiển thị thông tin
+    MM->>Audio: Phát âm thanh Chime xác nhận
+    MM->>MM: Khung Quả cầu tròn [MIDDLE_CENTER] xuất hiện trả lời tóm tắt
+
+    </pre>
+  </div>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0b1120',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#38bdf8',
+        lineColor: '#64748b',
+        secondaryColor: '#334155',
+        tertiaryColor: '#0f172a'
+      },
+      flowchart: {
+        curve: 'basis',
+        useMaxWidth: false
+      },
+      sequence: {
+        actorMargin: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: false
+      }
+    });
+  </script>
+</body>
+</html>

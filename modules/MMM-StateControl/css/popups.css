@@ -1,0 +1,638 @@
+/* ==============================================================
+   1. [MIDDLE_CENTER] KHU VỰC HIỂN THỊ TƯƠNG TÁC (POPUP / OVERLAY)
+   - Nằm ở chính giữa trung tâm mặt gương
+   - Khi bình thường (idle) hoàn toàn trống để soi gương
+   ============================================================== */
+.nlu-middle-center-zone {
+    position: fixed;
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 86vw;
+    max-width: 740px;
+    height: 0; /* Điểm neo tâm để các popup absolute định vị chính xác ở giữa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* 1.1 Action NONE: Khung bong bóng hình tròn AI hội thoại (Circular Orb Bubble) */
+.nlu-chat-bubble {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: clamp(340px, 34vw, 440px);
+    height: clamp(340px, 34vw, 440px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 38px 40px;
+    background: radial-gradient(
+        circle at 35% 25%,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(15, 28, 55, 0.88) 42%,
+        rgba(10, 18, 38, 0.94) 75%,
+        rgba(35, 15, 65, 0.90) 100%
+    );
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 2px solid rgba(0, 242, 254, 0.65);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.85),
+        0 0 45px rgba(0, 242, 254, 0.35),
+        0 0 80px rgba(124, 77, 255, 0.25),
+        inset 0 4px 14px rgba(255, 255, 255, 0.5),
+        inset 0 -6px 18px rgba(124, 77, 255, 0.4);
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.nlu-chat-bubble.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+    animation: bubble-floating 4.5s ease-in-out infinite;
+}
+
+/* Hiệu ứng phản chiếu ánh sáng vòm cung trên bề mặt quả cầu (Orb Specular Glare) */
+.bubble-reflection-glare {
+    position: absolute;
+    top: 10px;
+    left: 18%;
+    width: 64%;
+    height: 32%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.08) 60%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Chuyển động bồng bềnh êm ái như quả cầu lơ lửng */
+@keyframes bubble-floating {
+    0%, 100% {
+        transform: translate(-50%, -50%) translateY(0px) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) translateY(-8px) scale(1.015);
+    }
+}
+
+/* Badge tinh thể trong suốt trên đầu bong bóng tròn */
+.bubble-top-meta {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+}
+
+.bubble-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(0, 242, 254, 0.35);
+    border-radius: 20px;
+    padding: 3px 12px 4px 8px;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.3);
+}
+
+.bubble-sparkle {
+    font-size: 15px;
+    color: #00f2fe;
+    filter: drop-shadow(0 0 6px #00f2fe);
+}
+
+.bubble-ai-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    background: linear-gradient(135deg, #00f2fe, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bubble-audio-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 14px;
+}
+
+.bubble-audio-wave span {
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #00f2fe, #7c4dff);
+    border-radius: 3px;
+    animation: wave-bar-bounce 1s ease-in-out infinite alternate;
+}
+
+.bubble-audio-wave span:nth-child(1) { height: 45%; animation-delay: 0.0s; }
+.bubble-audio-wave span:nth-child(2) { height: 95%; animation-delay: 0.2s; }
+.bubble-audio-wave span:nth-child(3) { height: 60%; animation-delay: 0.4s; }
+
+.bubble-content {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(16px, 1.4vw + 0.2vh, 22px);
+    font-weight: 300;
+    line-height: 1.55;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 92%;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    text-align: center;
+    padding: 0 6px;
+    box-sizing: border-box;
+}
+
+.bubble-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* 1.2 Action SEARCH (web_image): Thẻ Tri Thức & Hình Ảnh Toàn Diện */
+.nlu-web-image-popup.entity-knowledge-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 750px;
+    max-height: 85vh;
+    background: rgba(10, 16, 28, 0.92);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(0, 242, 254, 0.45);
+    border-radius: 26px;
+    padding: 20px 26px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 242, 254, 0.25);
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.nlu-web-image-popup.entity-knowledge-card::-webkit-scrollbar {
+    display: none;
+}
+
+.nlu-web-image-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+/* Header Thẻ Tri Thức */
+.entity-card-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.entity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 242, 254, 0.12);
+    border: 1px solid rgba(0, 242, 254, 0.4);
+    border-radius: 16px;
+    padding: 3px 12px;
+    margin-bottom: 6px;
+}
+
+.entity-badge-sparkle {
+    color: #00f2fe;
+    font-size: 13px;
+    filter: drop-shadow(0 0 5px #00f2fe);
+}
+
+.entity-badge-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #00f2fe;
+    text-transform: uppercase;
+}
+
+.entity-title {
+    font-size: clamp(20px, 1.8vw, 26px);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 2px 0 0 0;
+    background: linear-gradient(135deg, #ffffff 30%, #a5f3fc 70%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+}
+
+.entity-subtitle {
+    font-size: 13.5px;
+    font-style: italic;
+    color: #94a3b8;
+    margin-top: 3px;
+    letter-spacing: 0.3px;
+}
+
+/* Vùng hiển thị hình ảnh */
+.popup-image-container {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    max-height: 42vh;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(5, 9, 16, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.popup-image {
+    max-width: 100%;
+    max-height: 42vh;
+    object-fit: contain;
+    display: block;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Spinner đang tải ảnh */
+.image-loader-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.spinner-ring {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(0, 242, 254, 0.15);
+    border-top: 3px solid #00f2fe;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+/* Thân nội dung tri thức */
+.entity-card-body {
+    width: 100%;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.entity-summary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 242, 254, 0.22);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-weight: 300;
+    line-height: 1.6;
+    color: #f1f5f9;
+    text-align: justify;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.08);
+}
+
+.entity-facts-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.entity-fact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 242, 254, 0.08);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    font-weight: 300;
+    color: #e0f2fe;
+    backdrop-filter: blur(10px);
+}
+
+.entity-fact-chip .fact-sparkle {
+    color: #00f2fe;
+    font-size: 11px;
+}
+
+.popup-caption {
+    margin-top: 10px;
+    font-size: 13.5px;
+    font-weight: 300;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* 1.3 Action SEARCH (camera): Phân tích đồ vật + Vision tag */
+.nlu-camera-vision-popup {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    width: 100%;
+    max-width: clamp(520px, 58vw, 720px);
+    background: rgba(10, 18, 34, 0.92);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1.5px solid rgba(0, 242, 254, 0.45);
+    border-radius: 24px;
+    padding: 18px 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 242, 254, 0.28);
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    z-index: 850;
+}
+
+.nlu-camera-vision-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+.vision-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    font-weight: 700;
+    color: #00f2fe;
+    margin-bottom: 12px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.vision-scanner-frame {
+    position: relative;
+    width: 100%;
+    max-height: 48vh;
+    min-height: 240px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000000;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 8px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.laser-scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00f2fe, #7c4dff, transparent);
+    box-shadow: 0 0 15px #00f2fe, 0 0 25px #7c4dff;
+    animation: scanner-sweep 2.2s ease-in-out infinite alternate;
+    z-index: 5;
+}
+
+@keyframes scanner-sweep {
+    0% { top: 0%; }
+    100% { top: 96%; }
+}
+
+.vision-frame-img {
+    width: 100%;
+    max-height: 48vh;
+    object-fit: contain;
+    display: block;
+}
+
+.vision-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: center;
+}
+
+.vision-tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 242, 254, 0.12);
+    border: 1px solid rgba(0, 242, 254, 0.45);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 14px;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+}
+
+.vision-tag-item .tag-conf {
+    color: #a78bfa;
+    font-weight: 500;
+}
+
+.vision-summary {
+    display: none !important;
+}
+
+/* 1.4 Action TAKE_PHOTO: Đếm ngược 3-2-1 + Xem trước ảnh vừa chụp */
+.nlu-take-photo-popup {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    width: 100%;
+    max-width: clamp(520px, 58vw, 720px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease;
+    pointer-events: none;
+    z-index: 850;
+}
+
+.nlu-take-photo-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+.countdown-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.countdown-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 4px solid #00f2fe;
+    box-shadow: 0 0 30px #00f2fe, inset 0 0 30px rgba(0, 242, 254, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 16, 28, 0.7);
+    backdrop-filter: blur(16px);
+}
+
+.countdown-number {
+    font-size: 64px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 0 20px #00f2fe, 0 0 40px #7c4dff;
+}
+
+.countdown-number.bounce {
+    animation: count-bounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.countdown-hint {
+    margin-top: 14px;
+    font-size: 17px;
+    color: #e2e8f0;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.photo-preview-box {
+    background: rgba(10, 18, 34, 0.92);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1.5px solid rgba(0, 242, 254, 0.45);
+    border-radius: 24px;
+    padding: 18px 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 242, 254, 0.28);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 0 2px;
+}
+
+.preview-header-badge {
+    font-size: 15px;
+    font-weight: 700;
+    color: #00f2fe;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.preview-filename {
+    font-size: 12px;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.photo-preview-img-wrapper {
+    width: 100%;
+    max-height: 48vh;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000000;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.photo-preview-img {
+    width: 100%;
+    max-height: 48vh;
+    object-fit: contain;
+    display: block;
+}
+
+.preview-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 13.5px;
+    color: #34d399;
+    font-weight: 500;
+}
+
+.preview-footer strong {
+    color: #6ee7b7;
+    font-weight: 600;
+}

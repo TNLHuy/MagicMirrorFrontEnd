@@ -1,0 +1,108 @@
+/* ==============================================================
+   STATE 0: Màn hình ngủ (Sleep / Standby) - Gương đen hoàn toàn
+   ============================================================== */
+body.state-sleep {
+    background-color: #000000 !important;
+}
+
+/* Ẩn header mặc định của MagicMirror cho MMM-StateControl để tránh hiện chữ UNDEFINED */
+.module.MMM-StateControl header.module-header,
+.MMM-StateControl header.module-header {
+    display: none !important;
+}
+
+/* ==============================================================
+   CONTAINER TỔNG QUAN NLU SMART MIRROR
+   ============================================================== */
+.nlu-mirror-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.nlu-mirror-container.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Flash chớp máy ảnh toàn màn hình khi TAKE_PHOTO */
+.nlu-camera-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 99999;
+    transition: opacity 0.1s ease-out;
+}
+
+.nlu-camera-flash.flash-active {
+    opacity: 0.95;
+    transition: opacity 0.05s ease-in;
+}
+
+/* ==============================================================
+   KEYFRAMES & HIỆU ỨNG DÙNG CHUNG
+   ============================================================== */
+@keyframes sparkle-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes wave-bar-bounce {
+    0% { transform: scaleY(0.3); }
+    100% { transform: scaleY(1.15); }
+}
+
+@keyframes count-bounce {
+    0% { transform: scale(0.6); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes disc-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes media-bar-jump {
+    0% { transform: scaleY(0.25); }
+    100% { transform: scaleY(1.2); }
+}
+
+@keyframes pulse-orb {
+    0%, 100% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; text-shadow: 0 0 16px #00f2fe, 0 0 28px #7c4dff; }
+}
+
+.typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1.15em;
+    margin-left: 5px;
+    vertical-align: -0.15em;
+    background: linear-gradient(180deg, #00f2fe, #7c4dff);
+    box-shadow: 0 0 10px #00f2fe;
+    animation: cursor-blink 0.75s infinite ease-in-out;
+}
+
+.typing-cursor.fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
